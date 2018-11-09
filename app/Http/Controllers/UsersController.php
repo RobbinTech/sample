@@ -29,9 +29,9 @@ class UsersController extends Controller
         $user = User::create([
                'name' => $request->name,
                'email' => $request->email,
-               'password' => bcrypt($request->password),
-            ]);
-        Auth::login($user);
+               'password' => bcrypt($request->password)
+        ]);
+        Auth::login($user); //设置注册成功自动登陆
         session()->flash('success', '欢迎，您将在这里开启一段新的旅程(ง •_•)ง');
         return redirect()->route('users.show', [$user]);
     }
