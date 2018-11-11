@@ -24,6 +24,7 @@ class UsersController extends Controller
 
     public function index()
     {
+        //用户首页列表，分页10个
         $users = User::paginate(10);
         return view('users.index', compact('users'));
     }
@@ -38,6 +39,7 @@ class UsersController extends Controller
         return view('users.show', compact('user'));
     }
 
+    //注册用户逻辑
     public function store(Request $request)
     {
         $this->validate($request, [
@@ -58,12 +60,14 @@ class UsersController extends Controller
         return redirect('/');
     }
 
+    //编辑用户页面，用策略验证本人才可以执行
     public function edit(User $user)
     {
         $this->authorize('update', $user);
         return view('users.edit', compact('user'));
     }
 
+    //更新用户资料
     public function update(User $user, Request $request)
     {
         $this->validate($request, [
@@ -83,6 +87,7 @@ class UsersController extends Controller
         return redirect()->route('users.show', $user->id);
     }
 
+    //删除用户，只有管理员才可以
     public function destroy(User $user)
     {
         $this->authorize('destroy', $user);
@@ -91,20 +96,20 @@ class UsersController extends Controller
         return back();
     }
 
+    //注册成功发送邮件激活
     public function sendEmailConfirmationTo($user)
     {
         $view = 'emails.confirm';
         $data = compact('user');
-        $from = '135746@chacuo.net';
-        $name = 'Aof';
         $to = $user->email;
-        $subject = '感谢注册 Sample 应用！请确认激活你的邮箱！';
+        $subject = '感谢注册 Sample 应用！请确认激活您的邮箱！';
 
-        Mail::send($view, $data, function ($message) use ($from, $name, $to, $subject) {
-            $message->from($from, $name)->to($to)->subject($subject);
+        Mail::send($view, $data, function ($message) use ( $to, $subject) {
+            $message->to($to)->subject($subject);
         });
     }
 
+    //接收token验证，完成激活
     public function confirmEmail($token)
     {
         $user = User::where('activation_token', $token)->firstOrFail();
