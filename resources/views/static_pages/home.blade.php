@@ -1,22 +1,33 @@
 @extends('layouts.default')
 
 @section('content')
-  <div class="jumbotron">
-    @if (session('status'))
-    <div class="alert alert-success">
-        {{ session('status') }}
+  @if (Auth::check())
+    <div class="row">
+      <div class="col-md-8">
+        <section class="status_form">
+          @include('shared._status_form')
+        </section>
+        <h3>微博列表</h3>
+        @include('shared._feed')
+      </div>
+      <aside class="col-md-4">
+        <section class="user_info">
+          @include('shared._user_info', ['user' => Auth::user()])
+        </section>
+      </aside>
     </div>
-    @endif
-
-    <h1>Hello Laravel</h1>
-    <p class="lead">
-      你现在所看到的是 <a href="#">测试</a> 的项目主页。
-    </p>
-    <p>
-      一切，将从这里开始。
-    </p>
-    <p>
-      <a class="btn btn-lg btn-success" href="{{ route('signup') }}" role="button">现在注册</a>
-    </p>
-  </div>
+  @else
+    <div class="jumbotron">
+      <h1>Hello Laravel</h1>
+      <p class="lead">
+        你现在所看到的是 <a href="https://laravel-china.org/courses/laravel-essential-training-5.5">Laravel 入门教程</a> 的项目主页。
+      </p>
+      <p>
+        一切，将从这里开始。
+      </p>
+      <p>
+        <a class="btn btn-lg btn-success" href="{{ route('signup') }}" role="button">现在注册</a>
+      </p>
+    </div>
+  @endif
 @stop
